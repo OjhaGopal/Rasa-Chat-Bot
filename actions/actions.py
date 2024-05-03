@@ -8,12 +8,6 @@ from rasa_sdk.events import SlotSet, UserUtteranceReverted, ActionReverted, Foll
 
 import re
 
-import MySQLdb
-
-hostname = "35.225.55.69"
-username = "rasa_User"
-password = "password12"
-database = "shopping_db"
 
 
 class ActionSearch(Action):
@@ -37,34 +31,6 @@ class ActionSearch(Action):
         return []
 ########################
 
-class ActionShowLatestNews(Action):
-
-    def name(self) -> Text:
-        return "action_show_latest_news"
-
-    def run(self, dispatcher: CollectingDispatcher,
-        tracker: Tracker,
-        domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        #Calling the DB
-        #calling an API
-        # do anything
-        #all caluculations are done
-        db = MySQLdb.connect(hostname,username,password,database)
-        cursor = db.cursor()
-        category = tracker.get_slot('category')
-        if category == 'phone':
-            cursor.execute("SELECT blog_url FROM news WHERE category=%s LIMIT 3",['phone'])
-        elif category == 'laptop':
-            cursor.execute("SELECT blog_url FROM news WHERE category=%s LIMIT 3",['laptop'])
-        news = cursor.fetchall()
-        if len(news) != 0:
-            for x in news:
-                dispatcher.utter_message(text=x[0])
-        else:
-            dispatcher.utter_message(text='Looks like there isnt any news available.')
-
-        dispatcher.utter_message(template='utter_select_next')
-        return []
 
 class ProductSearchForm(FormAction):
     """Example of a custom form action"""
